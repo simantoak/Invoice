@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>আবেদন ইনভয়েস ফর্ম</title>
+  <style>
+    body { font-family: kalpurush, sans-serif; margin: 20px; }
+    .form-group { margin-bottom: 10px; }
+    label { display: inline-block; width: 180px; }
+    input { padding: 6px; width: 250px; margin-bottom: 5px; }
+    button { padding: 10px 20px; margin-top: 10px; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #aaa; padding: 8px; text-align: center; }
+    th { background-color: #f0f0f0; }
+    .btn-primary { background: #28a745; color: white; border: none; }
+    .btn-primary:hover { background: #218838; }
+    .btn-print { background: #007bff; color: white; border: none; }
+    .btn-print:hover { background: #0056b3; }
+    @media print {
+      body * { visibility: hidden; }
+      #print-area, #print-area * { visibility: visible; }
+      #print-area { position: absolute; top: 0; left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <h2>আবেদন ফর্ম</h2>
+
+  <div class="form-area">
+    <div class="form-group"><label>ক্রমিক:</label><input type="text" id="serial"></div>
+    <div class="form-group"><label>তারিখ:</label><input type="date" id="date"></div>
+    <div class="form-group"><label>আবেদনের বিবরণ:</label><input type="text" id="description"></div>
+    <div class="form-group"><label>কাস্টমার নাম:</label><input type="text" id="customerName"></div>
+    <div class="form-group"><label>মোবাইল:</label><input type="text" id="mobile"></div>
+    <div class="form-group"><label>ফাইল জমা:</label><input type="text" id="fileSubmit"></div>
+    <div class="form-group"><label>ভেরিফাই কপি ও আইডি কার্ড টাকা:</label><input type="number" id="verifyAmount"></div>
+    <div class="form-group"><label>আবেদনের টাকা:</label><input type="number" id="applicationAmount"></div>
+    <div class="form-group"><label>মোট টাকা:</label><input type="number" id="totalAmount" readonly></div>
+    <div class="form-group"><label>স্বাক্ষর:</label><input type="text" id="signature"></div>
+    <button class="btn-primary" onclick="addEntry()">যোগ করুন</button>
+    <button class="btn-print" onclick="printData()">প্রিন্ট</button>
+  </div>
+
+  <div id="print-area">
+    <h3>ডাটাবেজ</h3>
+    <table id="dataTable">
+      <thead>
+        <tr>
+          <th>ক্রমিক</th>
+          <th>তারিখ</th>
+          <th>আবেদনের বিবরণ</th>
+          <th>কাস্টমার নাম</th>
+          <th>মোবাইল</th>
+          <th>ফাইল জমা</th>
+          <th>ভেরিফাই টাকা</th>
+          <th>আবেদনের টাকা</th>
+          <th>মোট টাকা</th>
+          <th>স্বাক্ষর</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const verifyAmount = document.getElementById('verifyAmount');
+    const applicationAmount = document.getElementById('applicationAmount');
+    const totalAmount = document.getElementById('totalAmount');
+
+    verifyAmount.addEventListener('input', calculateTotal);
+    applicationAmount.addEventListener('input', calculateTotal);
+
+    function calculateTotal() {
+      const verify = parseFloat(verifyAmount.value) || 0;
+      const application = parseFloat(applicationAmount.value) || 0;
+      totalAmount.value = (verify + application).toFixed(2);
+    }
+
+    function addEntry() {
+      const table = document.getElementById("dataTable").getElementsByTagName('tbody')[0];
+      const row = table.insertRow();
+
+      const fields = ['serial', 'date', 'description', 'customerName', 'mobile', 'fileSubmit', 'verifyAmount', 'applicationAmount', 'totalAmount', 'signature'];
+
+      fields.forEach(id => {
+        const cell = row.insertCell();
+        cell.innerText = document.getElementById(id).value;
+      });
+
+      fields.forEach(id => document.getElementById(id).value = '');
+      totalAmount.value = '';
+    }
+
+    function printData() {
+      window.print();
+    }
+  </script>
+
+</body>
+</html>
